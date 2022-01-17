@@ -1,0 +1,9 @@
+{
+  "name": "tspt",
+  "version": "0.0.1",
+  "main": "src/index.js",
+  "repository": "https://github.com/k0michi/tspt.git",
+  "author": "Komichi <k0michi@koyomi.co>",
+  "license": "MIT",
+  "type": "module"
+}
