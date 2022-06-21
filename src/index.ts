@@ -1,8 +1,13 @@
-export function parse(text) {
+export interface Node {
+  children: Node[];
+  value?: string;
+}
+
+export function parse(text: string) {
   const lines = text.split('\n');
-  const root = { children: [] };
-  const depthStack = [-1];
-  const nodeStack = [root];
+  const root: Node = { children: [] };
+  const depthStack: number[] = [-1];
+  const nodeStack: Node[] = [root];
 
   for (const line of lines) {
     const trimmedLine = line.trim();
@@ -12,7 +17,7 @@ export function parse(text) {
     }
 
     const depth = getDepth(line);
-    const node = { value: trimmedLine, children: [] };
+    const node: Node = { value: trimmedLine, children: [] };
 
     if (depth > depthStack[depthStack.length - 1]) {
       nodeStack[nodeStack.length - 1].children.push(node);
@@ -22,9 +27,13 @@ export function parse(text) {
       nodeStack[nodeStack.length - 2].children.push(node);
       nodeStack[nodeStack.length - 1] = node;
     } else if (depth < depthStack[depthStack.length - 1]) {
-      while (depth != depthStack[nodeStack.length - 1]) {
+      while (depth != depthStack[depthStack.length - 1]) {
         depthStack.pop();
         nodeStack.pop();
+
+        if (depthStack.length == 1) {
+          throw new Error('Syntax error');
+        }
       }
 
       nodeStack[nodeStack.length - 2].children.push(node);
@@ -35,7 +44,7 @@ export function parse(text) {
   return root;
 }
 
-function getDepth(line) {
+function getDepth(line: string) {
   const result = line.match(/^\s+/);
   let indent;
 
