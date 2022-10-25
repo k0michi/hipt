@@ -1,8 +1,6 @@
 # Hierarchically Indented Plain Text
 
-A library to parse plain text with indentation.
-
-## Example
+This is a library to parse plain text with indentation like this:
 
 ```
 abc
@@ -13,9 +11,27 @@ abc
     789
 ```
 
-This text is parsed as:
+## Installation
 
-```json
+```bash
+$ npm i hipt
+$ yarn add hipt
+```
+
+## Usage
+
+```js
+import * as hipt from 'hipt';
+
+const root = hipt.parse(
+`abc
+  def
+    ghi
+123
+  456
+    789`
+);
+/*
 {
   "children": [
     {
@@ -48,4 +64,8 @@ This text is parsed as:
     }
   ]
 }
+*/
 ```
+
+## License
+MIT License
