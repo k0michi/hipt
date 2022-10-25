@@ -1,5 +1,6 @@
 export interface Node {
   children: Node[];
+  // A root node doesn't have value
   value?: string;
 }
 
@@ -55,4 +56,24 @@ function getDepth(line: string) {
   }
 
   return indent;
+}
+
+export function stringify(node: Node, indent: string = '  ') {
+  const isRoot = node.value == undefined;
+  let string = isRoot ? '' : node.value + '\n';
+
+  for (const child of node.children) {
+    if (isRoot) {
+      string += stringify(child);
+    } else {
+      string += prefixEachLine(stringify(child), indent);
+    }
+  }
+
+  return string;
+}
+
+function prefixEachLine(string: string, prefix: string) {
+  // Empty lines remain the same
+  return string.split('\n').map(l => l.length == 0 ? l : prefix + l).join('\n');
 }

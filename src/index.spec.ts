@@ -92,11 +92,37 @@ describe('index', () => {
       ),
       { message: 'Syntax error' });
   });
+
+  it('should be able to stringify', () => {
+    equalStringifyResult(
+      node(undefined,
+        node('abc',
+          node('def',
+            node('ghi',
+              node('jkl')
+            ),
+            node('mno')
+          )
+        )
+      ),
+      `abc
+  def
+    ghi
+      jkl
+    mno
+`
+    );
+  });
 });
 
 function equalParseResult(string: string, node: index.Node) {
   const parsed = index.parse(string);
   return assert.deepStrictEqual(parsed, node);
+}
+
+function equalStringifyResult(node: index.Node, string: string) {
+  const stringified = index.stringify(node);
+  return assert.equal(stringified, string);
 }
 
 function node(value?: string, ...children: index.Node[]): index.Node {
