@@ -93,6 +93,45 @@ describe('index', () => {
       { message: 'Syntax error' });
   });
 
+  it('should handle empty line 1', () => {
+    equalParseResult(
+      `abc
+  def
+    ghi
+    
+    jkl
+    mno`, node(undefined,
+        node('abc',
+          node('def',
+            node('ghi'),
+            node(''),
+            node('jkl'),
+            node('mno')
+          )
+        )
+      )
+    );
+  });
+
+  it('should handle empty line 2', () => {
+    equalParseResult(
+      `abc
+  def
+    ghi
+    
+      jkl
+    mno`, node(undefined,
+        node('abc',
+          node('def',
+            node('ghi'),
+            node('', node('jkl')),
+            node('mno')
+          )
+        )
+      )
+    );
+  });
+
   it('should be able to stringify', () => {
     equalStringifyResult(
       node(undefined,

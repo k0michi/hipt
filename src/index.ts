@@ -13,12 +13,17 @@ export function parse(text: string) {
   for (const line of lines) {
     const trimmedLine = line.trim();
 
-    if (trimmedLine == '') {
-      continue;
-    }
-
     const depth = getDepth(line);
     const node: Node = { value: trimmedLine, children: [] };
+
+    if (trimmedLine == '') {
+      if (nodeStack.length >= 2) {
+        nodeStack[nodeStack.length - 2].children.push(node);
+        nodeStack[nodeStack.length - 1] = node;
+      }
+
+      continue;
+    }
 
     if (depth > depthStack[depthStack.length - 1]) {
       nodeStack[nodeStack.length - 1].children.push(node);
