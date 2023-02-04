@@ -1,6 +1,6 @@
 {
   "name": "hipt",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
   "types": "./esm/index.d.ts",
@@ -22,7 +22,8 @@
     "build:cjs": "tsc --module commonjs --outDir cjs",
     "build": "yarn build:esm && yarn build:cjs",
     "clean": "rm -rf cjs esm",
-    "test": "mocha"
+    "test": "mocha",
+    "prepare-publish": "yarn test && yarn clean && yarn build"
   },
   "files": [
     "cjs",
