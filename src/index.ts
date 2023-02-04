@@ -4,7 +4,11 @@ export interface Node {
   value?: string;
 }
 
-export function parse(text: string) {
+export interface ParseOptions {
+  deepenIf: (value: string) => boolean;
+}
+
+export function parse(text: string, options: ParseOptions = { deepenIf: (value: string) => true }) {
   const lines = text.split('\n');
   const root: Node = { children: [] };
   const depthStack: number[] = [-1];
@@ -16,6 +20,7 @@ export function parse(text: string) {
     const depth = getDepth(line);
     const node: Node = { value: trimmedLine, children: [] };
 
+    // If line is empty
     if (trimmedLine == '') {
       if (nodeStack.length >= 2) {
         nodeStack[nodeStack.length - 2].children.push(node);
@@ -26,9 +31,23 @@ export function parse(text: string) {
     }
 
     if (depth > depthStack[depthStack.length - 1]) {
-      nodeStack[nodeStack.length - 1].children.push(node);
-      depthStack.push(depth);
-      nodeStack.push(node);
+      const parent = nodeStack[nodeStack.length - 1];
+      const parentDepth = depthStack[depthStack.length - 1];
+      let shouldDeepen = true;
+
+      if (parent.value != null) {
+        shouldDeepen = options.deepenIf(parent.value);
+      }
+
+      if (shouldDeepen) {
+        nodeStack[nodeStack.length - 1].children.push(node);
+        depthStack.push(depth);
+        nodeStack.push(node);
+      } else {
+        node.value = line.substring(parentDepth);
+        nodeStack[nodeStack.length - 2].children.push(node);
+        nodeStack[nodeStack.length - 1] = node;
+      }
     } else if (depth == depthStack[depthStack.length - 1]) {
       nodeStack[nodeStack.length - 2].children.push(node);
       nodeStack[nodeStack.length - 1] = node;

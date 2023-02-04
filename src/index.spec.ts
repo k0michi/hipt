@@ -132,6 +132,38 @@ describe('index', () => {
     );
   });
 
+  it('should deepen properly', () => {
+    equalParseResult(
+      `#abc
+  def
+    ghi
+  jkl`, node(undefined,
+        node('#abc',
+          node('def'),
+          node('  ghi'),
+          node('jkl'),
+        )
+      )
+      , { deepenIf: value => value.startsWith('#') });
+  });
+
+  it('should deepen properly 2', () => {
+    equalParseResult(
+      `#abc
+  def
+    ghi
+      jkl
+  mno`, node(undefined,
+        node('#abc',
+          node('def'),
+          node('  ghi'),
+          node('    jkl'),
+          node('mno'),
+        )
+      )
+      , { deepenIf: value => value.startsWith('#') });
+  });
+
   it('should be able to stringify', () => {
     equalStringifyResult(
       node(undefined,
@@ -154,8 +186,8 @@ describe('index', () => {
   });
 });
 
-function equalParseResult(string: string, node: index.Node) {
-  const parsed = index.parse(string);
+function equalParseResult(string: string, node: index.Node, options?: index.ParseOptions) {
+  const parsed = index.parse(string, options);
   return assert.deepStrictEqual(parsed, node);
 }
 
